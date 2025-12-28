@@ -39,7 +39,7 @@ jobs:
 
     steps:
       - name: Checking out ${{ github.repository }}
-      - uses: actions/checkout@latest
+        uses: actions/checkout@latest
 
       - name: Cache/install Lowdown for man page generation
         uses: awalsh128/cache-apt-pkgs-action@latest
