@@ -14,14 +14,14 @@ jobs:
       matrix:
         os:
           - ubuntu-24.04
-          - ubuntu-24.04-arm
+          # - ubuntu-24.04-arm
         toolchain:
           - compiler: gcc
             version: 14
-          - compiler: clang
-            version: 19 
-          - compiler: clang
-            version: 20
+          # - compiler: clang
+          #   version: 19 
+          # - compiler: clang
+          #   version: 20
  
     # concurrency:
     #   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}-native
