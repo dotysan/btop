@@ -27,17 +27,9 @@ jobs:
     #   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}-native
     #   cancel-in-progress: true
 
-    # env:
-    #   CXX: ${{ matrix.toolchain.compiler == 'gcc' && format('g++-{0}', matrix.toolchain.version) || format('clang++-{0}', matrix.toolchain.version) }}
-    #   CC:  ${{ matrix.toolchain.compiler == 'gcc' && format('gcc-{0}',  matrix.toolchain.version) || format('clang-{0}',  matrix.toolchain.version) }}
     env:
-      CXX: ${{ format('%s%s', (matrix.toolchain.compiler == 'gcc' && 'g++-' || 'clang++-'), matrix.toolchain.version) }}
-      CC:  ${{ format('%s%s', (matrix.toolchain.compiler == 'gcc' && 'gcc-'  || 'clang-'),   matrix.toolchain.version) }}
-    # env:
-    #   CXX_PREFIX: ${{ fromJSON('{"gcc":"g++-","clang":"clang++-"}')[matrix.toolchain.compiler] }}
-    #   CC_PREFIX:  ${{ fromJSON('{"gcc":"gcc-","clang":"clang-"}')[matrix.toolchain.compiler] }}
-    #   CXX: ${{ format('{0}{1}', env.CXX_PREFIX, matrix.toolchain.version) }}
-    #   CC:  ${{ format('{0}{1}', env.CC_PREFIX,  matrix.toolchain.version) }}
+      CXX: ${{ matrix.toolchain.compiler == 'gcc' && format('g++-{0}', matrix.toolchain.version) || format('clang++-{0}', matrix.toolchain.version) }}
+      CC:  ${{ matrix.toolchain.compiler == 'gcc' && format('gcc-{0}',  matrix.toolchain.version) || format('clang-{0}',  matrix.toolchain.version) }}
 
     steps:
       - uses: actions/checkout@v6
