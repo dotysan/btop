@@ -20,9 +20,9 @@ jobs:
           - ''
           - '-arm'
         include:
-          - os: ubuntu-22.04
-            compiler: gcc
-            version: 14
+          # - os: ubuntu-22.04
+          #   compiler: gcc
+          #   version: 14
           - os: ubuntu-24.04
             compiler: gcc
             version: 14
@@ -52,23 +52,12 @@ jobs:
         with:
           packages: clang-${{ matrix.version }}
 
-      - name: Install GCC from test PPA
-        if: matrix.compiler == 'gcc' && contains(matrix.os, 'ubuntu-22.04')
-        run: sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
-        uses: awalsh128/cache-apt-pkgs-action@latest
-        with:
-          packages: gcc-${{ matrix.version }} g++-${{ matrix.version }}
-      #   run: |
-      #     sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-      #     sudo apt-get update
-      #     sudo apt-get install -y gcc-${{ matrix.toolchain.version }} g++-${{ matrix.toolchain.version }}
-
       # - name: Install Clang
       #   if: matrix.toolchain.compiler == 'clang'
       #   uses: llvm/actions/setup-llvm@v1
       #   with:
       #     version: ${{ matrix.toolchain.version }
 
-      - name: Compile
+      - name: Compile ${{ github.event.repository.name }}
         # we run 2 jobs per cpu core because most are small
         run: make CXX="${{ env.CXX }}" CC="${{ env.CC }}" THREADS=$(($(nproc)*2))
