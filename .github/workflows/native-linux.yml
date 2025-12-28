@@ -1,0 +1,63 @@
+name: Linux Native Compiler
+
+on:
+
+  workflow_dispatch:
+
+jobs:
+
+  build:
+    # name: ${{ matrix.compiler }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os:
+          - ubuntu-24.04
+          - ubuntu-24.04-arm
+        toolchain:
+          - compiler: gcc
+            version: 14
+          - compiler: clang
+            version: 19 
+          - compiler: clang
+            version: 20
+ 
+    # concurrency:
+    #   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}-native
+    #   cancel-in-progress: true
+
+    # env:
+    #   CXX: ${{ matrix.toolchain.compiler == 'gcc' && format('g++-{0}', matrix.toolchain.version) || format('clang++-{0}', matrix.toolchain.version) }}
+    #   CC:  ${{ matrix.toolchain.compiler == 'gcc' && format('gcc-{0}',  matrix.toolchain.version) || format('clang-{0}',  matrix.toolchain.version) }}
+    env:
+      CXX: ${{ format('%s%s', (matrix.toolchain.compiler == 'gcc' && 'g++-' || 'clang++-'), matrix.toolchain.version) }}
+      CC:  ${{ format('%s%s', (matrix.toolchain.compiler == 'gcc' && 'gcc-'  || 'clang-'),   matrix.toolchain.version) }}
+    # env:
+    #   CXX_PREFIX: ${{ fromJSON('{"gcc":"g++-","clang":"clang++-"}')[matrix.toolchain.compiler] }}
+    #   CC_PREFIX:  ${{ fromJSON('{"gcc":"gcc-","clang":"clang-"}')[matrix.toolchain.compiler] }}
+    #   CXX: ${{ format('{0}{1}', env.CXX_PREFIX, matrix.toolchain.version) }}
+    #   CC:  ${{ format('{0}{1}', env.CC_PREFIX,  matrix.toolchain.version) }}
+
+    steps:
+      - uses: actions/checkout@v6
+
+      # - name: Install native build tools
+      #   run: sudo apt-get update && sudo apt-get install -y build-essential cmake ninja-build
+
+      # - name: Install GCC
+      #   if: matrix.toolchain.compiler == 'gcc'
+      #   run: |
+      #     sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+      #     sudo apt-get update
+      #     sudo apt-get install -y gcc-${{ matrix.toolchain.version }} g++-${{ matrix.toolchain.version }}
+
+      # - name: Install Clang
+      #   if: matrix.toolchain.compiler == 'clang'
+      #   uses: llvm/actions/setup-llvm@v1
+      #   with:
+      #     version: ${{ matrix.toolchain.version }
+
+      - name: Compile
+        # we hard-code here because there are 15 jobs and most are small
+        run: make CXX="${{ env.CXX }}" CC="${{ env.CC }}" THREADS=15
